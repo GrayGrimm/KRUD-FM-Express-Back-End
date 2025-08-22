@@ -9,6 +9,20 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    bio: {
+        type: String,
+        required: true,
+    },
+    callSign: {
+        type: String,
+        required: true,
+    },
+    broadcastLocation: {
+        type: String,
+    },
+    logo: {
+        type: String,
+    },
 });
 
 userSchema.set('toJSON', {
