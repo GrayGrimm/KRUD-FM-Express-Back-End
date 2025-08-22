@@ -16,7 +16,7 @@ const playlistSchema = new mongoose.Schema({
             type: String,
             required: true,
         },
-        songsSchema: {ref: songId}
+        songsSchema: [{ref: songId}]
 });
 
 const Playlist = mongoose.model('Playlist', playlistSchema);
