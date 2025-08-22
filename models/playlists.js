@@ -1,4 +1,6 @@
-const playlistSchema = new mongoose.Schema({
+const { mongoose } = require("mongoose");
+
+const playlistsSchema = new mongoose.Schema({
         playlist: {
             type: String,
             required: true,
@@ -10,12 +12,12 @@ const playlistSchema = new mongoose.Schema({
         station: {
             type: String,
             required: true,
-            enum: [],
+            enum: ["953", "97.9", "666"],
         },
         author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         songsSchema: [{ type: mongoose.Schema.Types.ObjectId, ref: "Songs" }]
 });
 
-const Playlist = mongoose.model('Playlist', playlistSchema);
+const Playlist = mongoose.model('Playlist', playlistsSchema);
 
-modules.exports = Playlist;
+module.exports = Playlist;
