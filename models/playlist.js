@@ -12,11 +12,8 @@ const playlistSchema = new mongoose.Schema({
             required: true,
             enum: [],
         },
-        author: {
-            type: String,
-            required: true,
-        },
-        songsSchema: [{ref: songId}]
+        author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        songsSchema: [{ type: mongoose.Schema.Types.ObjectId, ref: "Songs" }]
 });
 
 const Playlist = mongoose.model('Playlist', playlistSchema);
