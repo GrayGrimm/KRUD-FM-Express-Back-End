@@ -16,7 +16,14 @@ router.post("/", verifyToken, async (req, res) => {
     }
 })
 
-
+router.get('/', verifyToken, async (req, res) => {
+    try {
+        const songs = await Song.find({})
+        res.status(200).json(songs)
+    } catch (err) {
+        res.status(500).json({ err: err.message })
+    }
+});
 
 
 module.exports = router;
