@@ -25,5 +25,14 @@ router.get('/', verifyToken, async (req, res) => {
     }
 });
 
+router.delete('/:songId', verifyToken, async (req, res) => {
+    try {
+        const deletedSong = await Song.findByIdAndDelete(req.params.songId)
+        res.status(200).json(deletedSong)
+    } catch (err) {
+        res.status(500).json({ err: err.message })
+    }
+});
+
 
 module.exports = router;
