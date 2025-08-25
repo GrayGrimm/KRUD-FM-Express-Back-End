@@ -15,6 +15,7 @@ const songsSchema = new mongoose.Schema({
     albumArt: {
         type: String, // image
     },
+        
 });
 
 const Songs = mongoose.model('Songs', songsSchema);
