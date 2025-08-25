@@ -7,7 +7,7 @@ const cors = require('cors');
 const logger = require('morgan');
 
 const testJwtRouter = require('./controllers/test-jwt');
-const authRouter = require('./controllers/auth');
+const authRouter = require('./controllers/auths.js');
 const usersRouter = require('./controllers/users.js')
 const playlistsRouter = require('./controllers/playlists.js')
 
@@ -24,7 +24,7 @@ app.use(logger('dev'));
 
 // Routes go here
 
-app.use('/auth', authRouter);
+app.use('/auths', authRouter);
 app.use('/test-jwt', testJwtRouter);
 app.use('/users', usersRouter);
 app.use('/playlists', playlistsRouter);
