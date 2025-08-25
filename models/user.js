@@ -5,22 +5,22 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    hashedPassword: {
+    hashedPassword:{
         type: String,
         required: true,
     },
-    bio: {
+    bio:{
         type: String,
-        required: true,
+        required: true
     },
-    callSign: {
+    callSign:{
         type: String,
-        required: true,
+        required: true
     },
-    broadcastLocation: {
+    broadcastLocation:{
         type: String,
     },
-    logo: {
+    logo:{
         type: String,
     },
 });
