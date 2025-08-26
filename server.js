@@ -18,6 +18,8 @@ mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
+const PORT = process.env.PORT ? process.env.PORT : 3000;
+
 app.use(cors());
 app.use(express.json());
 app.use(logger('dev'));
@@ -30,6 +32,6 @@ app.use('/users', usersRouter);
 app.use('/playlists', playlistsRouter);
 app.use("/songs", songsRouter);
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log('The express app is ready!');
 });
