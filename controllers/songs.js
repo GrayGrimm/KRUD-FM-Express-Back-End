@@ -28,7 +28,6 @@ router.get('/', verifyToken, async (req, res) => {
 router.get('/:songId', verifyToken, async (req, res) => {
   try {
     const song = await Song.findById(req.params.songId)
-      .populate("author")
     res.status(200).json(song);
   } catch(err) {
     res.status(500).json({ err: err.message })
