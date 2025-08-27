@@ -15,6 +15,7 @@ const songsSchema = new mongoose.Schema({
     albumArt: {
         type: String, // image
     },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         
 });
 
