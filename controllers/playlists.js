@@ -68,7 +68,7 @@ router.delete('/:playlistId', verifyToken, async (req, res) => {
 router.post('/:playlistId/new-song', async (req, res) => {
   const { playlistId } = req.params;
   const { songId } = req.body;
-
+  console.log('this will work')
   try {
     const playlist = await Playlist.findById(playlistId);
     if(!playlist) return res.status(404).send('Playlist not found');
