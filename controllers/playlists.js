@@ -31,6 +31,7 @@ router.get('/:playlistId', verifyToken, async (req, res) => {
   try {
     const playlist = await Playlist.findById(req.params.playlistId)
       .populate("author")
+      .populate('songs')
     res.status(200).json(playlist);
   } catch (err) {
     res.status(500).json({ err: err.message })
@@ -65,9 +66,9 @@ router.delete('/:playlistId', verifyToken, async (req, res) => {
 });
 // --------------------------API-------------------------//
 
-router.post('/:playlistId/new-song', async (req, res) => {
+router.post('/api/:playlistId/:songId', async (req, res) => {
   const { playlistId } = req.params;
-  const { songId } = req.body;
+  const { songId } = req.params;
   console.log('this will work')
   try {
     const playlist = await Playlist.findById(playlistId);
