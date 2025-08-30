@@ -1,6 +1,7 @@
 const express = require("express");
 const verifyToken = require("../middleware/verify-token.js");
 const Playlist = require("../models/playlist.js");
+const Song = require("../models/song.js");
 const router = express.Router();
 
 router.post('/', verifyToken, async (req, res) => {
@@ -66,19 +67,36 @@ router.delete('/:playlistId', verifyToken, async (req, res) => {
 });
 // --------------------------API-------------------------//
 
-router.post('/api/:playlistId/:songId', async (req, res) => {
+router.post('/api/:playlistId/:songId', verifyToken, async (req, res) => {
   const { playlistId } = req.params;
   const { songId } = req.params;
-  console.log('this will work')
   try {
     const playlist = await Playlist.findById(playlistId);
-    if(!playlist) return res.status(404).send('Playlist not found');
+    if (!playlist) return res.status(404).send('Playlist not found');
 
-    if(!playlist.songs.includes(songId)) {
+    if (!playlist.songs.includes(songId)) {
       playlist.songs.push(songId);
       await playlist.save();
     }
     res.status(200).json({ message: 'Song Added', playlist })
+  } catch (err) {
+    res.status(500).json({ err: err.message })
+  }
+});
+router.delete('/api/:playlistId/:songId', verifyToken, async (req, res) => {
+  const { playlistId, songId } = req.params;
+  try {
+    const playlist = await Playlist.findById(playlistId)
+    if (!playlist) return res.status(404).send("Playlist not found");
+
+    
+    if (!playlist.author.equals(req.user._id)) {
+      return res.status(403).send("You are not allowed!")
+    }
+    playlist.songs = playlist.songs.filter(id => id.toString() !== songId.toString());
+    await playlist.save();
+
+    res.status(200).json({ message: 'Song Removed', playlist })
   } catch (err) {
     res.status(500).json({ err: err.message })
   }
