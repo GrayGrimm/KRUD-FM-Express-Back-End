@@ -15,7 +15,7 @@ const playlistsSchema = new mongoose.Schema({
         station: {
             type: String,
             required: true,
-            enum: ["953", "97.9", "666"],
+            enum: ["953", "97.9", "666", "105.3"],
         },
         author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         songs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Songs" }]
