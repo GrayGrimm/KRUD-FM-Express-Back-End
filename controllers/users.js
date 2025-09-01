@@ -6,7 +6,7 @@ const verifyToken = require('../middleware/verify-token');
 
 router.get('/', verifyToken, async (req, res) => {
     try {
-        const users = await User.find({}, "username");
+        const users = await User.find().select('username callSign bio broadcastLocation logo avatar');
 
         res.json(users);
     } catch (err) {
