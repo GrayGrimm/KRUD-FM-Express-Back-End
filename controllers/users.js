@@ -3,6 +3,7 @@ const router = express.Router();
 
 const User = require('../models/user');
 const verifyToken = require('../middleware/verify-token');
+import { upload } from '../middleware/upload.js';
 
 router.get('/', verifyToken, async (req, res) => {
     try {
@@ -30,4 +31,21 @@ router.get('/:userId', verifyToken, async (req, res) => {
         res.status(500).json({ err: err.message });
     }
 });
+
+router.put('/upload-logo/:userId', upload.single('logo'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // Save file path
+    user.logo = req.file.path; 
+    await user.save();
+
+    res.status(200).json({ message: 'Logo uploaded successfully', logo: user.logo });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 module.exports = router;

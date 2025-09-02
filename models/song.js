@@ -13,7 +13,7 @@ const songsSchema = new mongoose.Schema({
         type: String,
     },
     albumArt: {
-        type: String, // image
+        type: String,
     },
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         
