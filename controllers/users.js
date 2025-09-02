@@ -32,20 +32,6 @@ router.get('/:userId', verifyToken, async (req, res) => {
     }
 });
 
-router.put('/upload-logo/:userId', upload.single('logo'), async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId);
-    if (!user) return res.status(404).json({ message: 'User not found' });
-
-    // Save file path
-    user.logo = req.file.path; 
-    await user.save();
-
-    res.status(200).json({ message: 'Logo uploaded successfully', logo: user.logo });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 
 module.exports = router;
