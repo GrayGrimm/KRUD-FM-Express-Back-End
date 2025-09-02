@@ -20,9 +20,6 @@ const userSchema = mongoose.Schema({
     broadcastLocation:{
         type: String,
     },
-    logo:{
-        type: String,
-    },
 });
 
 userSchema.set('toJSON', {
