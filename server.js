@@ -12,6 +12,8 @@ const usersRouter = require('./controllers/users.js')
 const playlistsRouter = require('./controllers/playlists.js')
 const songsRouter = require("./controllers/songs.js");
 
+const soundcloudRouter = require('./controllers/soundcloud.js');
+
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
@@ -29,6 +31,7 @@ app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/playlists', playlistsRouter);
 app.use("/songs", songsRouter);
+app.use('/soundcloud', soundcloudRouter);
 
 app.listen(PORT, () => {
   console.log('The express app is ready!');

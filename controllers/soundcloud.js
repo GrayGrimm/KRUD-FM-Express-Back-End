@@ -10,8 +10,8 @@ const SOUNDCLOUD_API_BASE = 'https://api.soundcloud.com';
 // Middleware to check if SoundCloud credentials are configured
 const checkSoundCloudConfig = (req, res, next) => {
   if (!SOUNDCLOUD_CLIENT_ID || !SOUNDCLOUD_CLIENT_SECRET) {
-    return res.status(500).json({ 
-      error: 'SoundCloud API credentials not configured. Please set SOUNDCLOUD_CLIENT_ID and SOUNDCLOUD_CLIENT_SECRET environment variables.' 
+    return res.status(500).json({
+      error: 'SoundCloud API credentials not configured. Please set SOUNDCLOUD_CLIENT_ID and SOUNDCLOUD_CLIENT_SECRET environment variables.'
     });
   }
   next();
@@ -41,17 +41,22 @@ router.get('/search', checkSoundCloudConfig, async (req, res) => {
       return res.status(400).json({ error: 'Query parameter "q" is required' });
     }
 
+    const accessToken = await getAccessToken();
+
     const params = new URLSearchParams({
       q,
       limit,
-      offset,
-      client_id: SOUNDCLOUD_CLIENT_ID
+      offset
     });
-
     if (genres) params.append('genres', genres);
     if (tags) params.append('tags', tags);
 
-    const response = await axios.get(`${SOUNDCLOUD_API_BASE}/tracks?${params}`);
+
+    const response = await axios.get(`${SOUNDCLOUD_API_BASE}/tracks?${params}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
 
     res.json({
       success: true,
@@ -64,9 +69,9 @@ router.get('/search', checkSoundCloudConfig, async (req, res) => {
     });
   } catch (error) {
     console.error('SoundCloud search error:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to search SoundCloud tracks',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -90,9 +95,9 @@ router.get('/tracks/:id', checkSoundCloudConfig, async (req, res) => {
     if (error.response?.status === 404) {
       return res.status(404).json({ error: 'Track not found' });
     }
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch track information',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -122,9 +127,9 @@ router.get('/trending', checkSoundCloudConfig, async (req, res) => {
     });
   } catch (error) {
     console.error('SoundCloud trending tracks fetch error:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch trending tracks',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -144,9 +149,9 @@ router.get('/genres', checkSoundCloudConfig, async (req, res) => {
     });
   } catch (error) {
     console.error('SoundCloud genres fetch error:', error.message);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to fetch genres',
-      details: error.message 
+      details: error.message
     });
   }
 });
