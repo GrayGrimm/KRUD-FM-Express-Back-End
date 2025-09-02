@@ -22,6 +22,7 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "sass": "^1.91.0",
+    "soundcloud-scraper": "^5.0.3",
     "styled-components": "^6.1.19"
   },
   "devDependencies": {
