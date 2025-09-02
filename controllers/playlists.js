@@ -4,8 +4,15 @@ const Playlist = require("../models/playlist.js");
 const router = express.Router();
 
 router.post('/', verifyToken, async (req, res) => {
+  console.log('req.user:', req.user);
+
   try {
+    console.log('req.user:', req.user);
+
     req.body.author = req.user._id;
+    console.log('req.user:', req.user);
+
+    req.body.songs = req.body.songs || [];
     const playlist = await Playlist.create(req.body);
     playlist._doc.author = req.user;
     res.status(201).json(playlist);
@@ -72,9 +79,9 @@ router.post('/api/:playlistId/:songId', async (req, res) => {
   console.log('this will work')
   try {
     const playlist = await Playlist.findById(playlistId);
-    if(!playlist) return res.status(404).send('Playlist not found');
+    if (!playlist) return res.status(404).send('Playlist not found');
 
-    if(!playlist.songs.includes(songId)) {
+    if (!playlist.songs.includes(songId)) {
       playlist.songs.push(songId);
       await playlist.save();
     }

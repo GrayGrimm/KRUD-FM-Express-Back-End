@@ -1,6 +1,8 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+let cachedAccessToken = null;
+let tokenExpiryTime = null;
 
 // SoundCloud API configuration
 const SOUNDCLOUD_CLIENT_ID = process.env.SOUNDCLOUD_CLIENT_ID;
@@ -19,15 +21,33 @@ const checkSoundCloudConfig = (req, res, next) => {
 
 // Get access token (required for most API calls)
 const getAccessToken = async () => {
+  const now = Date.now();
+  // If token exists and hasn't expired, reuse it
+  if (cachedAccessToken && tokenExpiryTime && now < tokenExpiryTime) {
+    return cachedAccessToken;
+  }
   try {
-    const response = await axios.post('https://api.soundcloud.com/oauth2/token', {
-      grant_type: 'client_credentials',
-      client_id: SOUNDCLOUD_CLIENT_ID,
-      client_secret: SOUNDCLOUD_CLIENT_SECRET
-    });
-    return response.data.access_token;
+    const response = await axios.post(
+      'https://api.soundcloud.com/oauth2/token',
+      new URLSearchParams({
+        grant_type: 'client_credentials',
+        client_id: SOUNDCLOUD_CLIENT_ID,
+        client_secret: SOUNDCLOUD_CLIENT_SECRET
+      }),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      }
+    );
+
+    cachedAccessToken = response.data.access_token;
+    // Set expiry time (typically 3600 seconds = 1 hour)
+    tokenExpiryTime = now + response.data.expires_in * 1000;
+
+    return cachedAccessToken;
   } catch (error) {
-    console.error('Error getting SoundCloud access token:', error.message);
+    console.error('Error getting SoundCloud access token:', error.response?.data || error.message);
     throw new Error('Failed to authenticate with SoundCloud API');
   }
 };
@@ -35,22 +55,21 @@ const getAccessToken = async () => {
 // Search tracks
 router.get('/search', checkSoundCloudConfig, async (req, res) => {
   try {
-    const { q, limit = 20, offset = 0, genres, tags } = req.query;
+    const { q, limit = 20, offset = 0 } = req.query;
 
     if (!q) {
       return res.status(400).json({ error: 'Query parameter "q" is required' });
     }
 
     const accessToken = await getAccessToken();
+    console.log('Access Token:', accessToken);
 
-    const params = new URLSearchParams({
-      q,
-      limit,
-      offset
-    });
-    if (genres) params.append('genres', genres);
-    if (tags) params.append('tags', tags);
+    if (!accessToken) {
+      console.error('Failed to retrieve access token');
+      return res.status(500).json({ error: 'Unable to authenticate with SoundCloud' });
+    }
 
+    const params = new URLSearchParams({ q, limit, offset });
 
     const response = await axios.get(`${SOUNDCLOUD_API_BASE}/tracks?${params}`, {
       headers: {
@@ -68,10 +87,10 @@ router.get('/search', checkSoundCloudConfig, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('SoundCloud search error:', error.message);
+    console.error('SoundCloud search error:', error.response?.data || error.message);
     res.status(500).json({
       error: 'Failed to search SoundCloud tracks',
-      details: error.message
+      details: error.response?.data || error.message
     });
   }
 });
