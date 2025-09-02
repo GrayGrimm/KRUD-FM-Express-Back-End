@@ -37,9 +37,7 @@ router.post('/sign-up', async (req, res) => {
 
 router.post('/sign-in', async (req, res) => {
     try {
-        // Look up the user by their username in the database
         const user = await User.findOne({ username: req.body.username });
-        // If the user doesn't exist, return a 401 status code with a message
         if (!user) {
             return res.status(401).json({ err: 'Invalid Credentials!' });
         }
