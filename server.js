@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
 
-const testJwtRouter = require('./controllers/test-jwt');
+
 const authRouter = require('./controllers/auth.js');
 const usersRouter = require('./controllers/users.js')
 const playlistsRouter = require('./controllers/playlists.js')
@@ -24,10 +24,8 @@ app.use(cors());
 app.use(express.json());
 app.use(logger('dev'));
 
-// Routes go here
 
 app.use('/auth', authRouter);
-app.use('/test-jwt', testJwtRouter);
 app.use('/users', usersRouter);
 app.use('/playlists', playlistsRouter);
 app.use("/songs", songsRouter);
